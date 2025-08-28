@@ -3,6 +3,7 @@ package com.example.quiz.model.dto.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,8 +28,8 @@ public class QuizResponse {
     private QuizStats stats;
 
     // Timestamps
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
 
     // Danh sách câu hỏi (có thể null)
 //    private List<QuestionResponse> questions;

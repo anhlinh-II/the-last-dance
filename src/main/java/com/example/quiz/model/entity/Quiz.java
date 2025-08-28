@@ -4,6 +4,7 @@ import com.example.quiz.base.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name = "quizzes")
@@ -11,7 +12,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class Quiz extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

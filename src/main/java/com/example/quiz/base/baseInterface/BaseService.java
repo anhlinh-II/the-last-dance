@@ -1,5 +1,7 @@
 package com.example.quiz.base.baseInterface;
 
+import com.example.quiz.model.dto.request.RequestPagingDto;
+import com.example.quiz.model.dto.response.PagingResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -28,4 +30,7 @@ public interface BaseService<E, ID, R, P, V> {
     // Additional common operations (optional)
     List<P> findAll();
     Optional<E> findEntityById(ID id);
+
+    // Advanced filtering for views
+    PagingResponseDto<Map<String, Object>> getViewPagingWithFilter(RequestPagingDto request);
 }

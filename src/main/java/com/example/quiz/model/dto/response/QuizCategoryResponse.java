@@ -1,6 +1,7 @@
 package com.example.quiz.model.dto.response;
 
 import lombok.Data;
+import java.time.Instant;
 
 @Data
 public class QuizCategoryResponse {
@@ -8,5 +9,10 @@ public class QuizCategoryResponse {
     private String name;
     private String description;
     private String imageUrl;
-    private Long quizCount;
+    private Boolean isActive;
+    private Boolean isDelete;
+    private Instant createdAt;
+    private String createdBy;
+    private Instant updatedAt;
+    private String updatedBy;
 }

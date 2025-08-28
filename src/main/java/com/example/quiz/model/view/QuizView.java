@@ -6,6 +6,7 @@ import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.Subselect;
 import org.hibernate.annotations.Synchronize;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Immutable
@@ -45,8 +46,8 @@ public class QuizView {
     private Boolean isActive;
     private Integer difficultyLevel;
     private String coverImageUrl;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
 
     // Category info
     private Long categoryId;

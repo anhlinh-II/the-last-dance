@@ -1,7 +1,9 @@
 package com.example.quiz.base.impl;
 
 import com.example.quiz.base.baseInterface.BaseService;
+import com.example.quiz.model.dto.request.RequestPagingDto;
 import com.example.quiz.model.dto.response.ApiResponse;
+import com.example.quiz.model.dto.response.PagingResponseDto;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -62,6 +64,12 @@ public abstract class BaseController<E, ID, R, P, V> {
         return ApiResponse.successOf(getService().getViewPaging(pageable));
     }
 
+    @PostMapping("/views/list")
+    public ApiResponse<PagingResponseDto<Map<String, Object>>> getViewsPaged(@Valid @RequestBody RequestPagingDto request) {
+        PagingResponseDto<Map<String, Object>> result = getService().getViewPagingWithFilter(request);
+        return ApiResponse.successOf(result);
+    }
+
     // Exception handler (có thể đưa vào @ControllerAdvice riêng)
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -81,3 +89,4 @@ public abstract class BaseController<E, ID, R, P, V> {
         return ApiResponse.error(400, "Validation error");
     }
 }
+
