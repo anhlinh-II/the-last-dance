@@ -18,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -46,6 +45,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long, UserRequest, Us
     }
 
     // Get User by username/email/phone
+    @Override
     public User handleGetUserByUsernameOrEmailOrPhone(String loginInput) {
         Optional<User> optionalUser = this.userRepository.findByEmail(loginInput);
         log.info("login input: {}", loginInput);
@@ -76,6 +76,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long, UserRequest, Us
         return userRepository.save(user);
     }
 
+    @Override
     public void updateUserToken(String token, String emailUsernamePhone) {
         User currentUser = this.handleGetUserByUsernameOrEmailOrPhone(emailUsernamePhone);
         if (currentUser != null) {
@@ -84,6 +85,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long, UserRequest, Us
         }
     }
 
+    @Override
     public User getUserByRefreshTokenAndEmailOrUsernameOrPhone(String token, String emailUsernamePhone) {
         return this.userRepository.findByRefreshTokenAndEmailOrUsernameOrPhone(token, emailUsernamePhone)
                 .orElseThrow(() -> new AppException(ErrorCode.ENTITY_NOT_EXISTED));
@@ -95,6 +97,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long, UserRequest, Us
         return optionalUser.orElse(null);
     }
 
+    @Override
     public boolean verifyOtp(User user, String otp) {
         if (user.getOtp().equals(otp) && Duration.between(user.getOtpGeneratedTime(), Instant.now()).getSeconds() < 60) {
             user.setOtp(otp);

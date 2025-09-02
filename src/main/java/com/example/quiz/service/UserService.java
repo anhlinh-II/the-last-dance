@@ -8,5 +8,14 @@ import com.example.quiz.model.view.UserView;
 
 public interface UserService extends BaseService<User, Long, UserRequest, UserResponse, UserView> {
 
+    // Get User by username/email/phone
+    User handleGetUserByUsernameOrEmailOrPhone(String loginInput);
+
+    void updateUserToken(String token, String emailUsernamePhone);
+
+    User getUserByRefreshTokenAndEmailOrUsernameOrPhone(String token, String emailUsernamePhone);
+
     User getUserByEmail(String email);
+
+    boolean verifyOtp(User user, String otp);
 }
