@@ -42,10 +42,12 @@ public abstract class BaseServiceImpl<E, ID, R, P, V> implements BaseService<E, 
     }
 
     @Override
-    public P findById(ID id) {
-        return repository.findById(id)
-                .map(mapper::entityToResponse)
-                .orElseThrow(() -> new EntityNotFoundException("Entity not found with id: " + id));
+    public E findById(ID id) {
+        Optional<E> optionalEntity = repository.findById(id);
+        if (optionalEntity.isEmpty()) {
+            throw new EntityNotFoundException("Entity not found with id: " + id);
+        }
+        return optionalEntity.get();
     }
 
     @Override
@@ -83,7 +85,7 @@ public abstract class BaseServiceImpl<E, ID, R, P, V> implements BaseService<E, 
 
     @Override
     public P getById(ID id) {
-        return findById(id); // Delegate to existing findById method
+        return mapper.entityToResponse(findById(id)); // Delegate to updated findById method
     }
 
     @Override

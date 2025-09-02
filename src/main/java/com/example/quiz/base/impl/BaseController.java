@@ -19,49 +19,53 @@ import java.util.Map;
 
 public abstract class BaseController<E, ID, R, P, V> {
 
-    protected abstract BaseService<E, ID, R, P, V> getService();
+    protected final BaseService<E, ID, R, P, V> service;
+
+    protected BaseController(BaseService<E, ID, R, P, V> service) {
+        this.service = service;
+    }
 
     @GetMapping
     public ApiResponse<List<P>> findAll() {
-        return ApiResponse.successOf(getService().findAll());
+        return ApiResponse.successOf(service.findAll());
     }
 
     @GetMapping("/paged")
     public ApiResponse<Page<P>> findAllPaged(Pageable pageable) {
-        return ApiResponse.successOf(getService().getAll(pageable));
+        return ApiResponse.successOf(service.getAll(pageable));
     }
 
     @GetMapping("/{id}")
     public ApiResponse<P> findById(@PathVariable ID id) {
-        return ApiResponse.successOf(getService().getById(id));
+        return ApiResponse.successOf(service.getById(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<P> create(@Valid @RequestBody R request) {
-        return ApiResponse.successOf(getService().create(request));
+        return ApiResponse.successOf(service.create(request));
     }
 
     @PutMapping("/{id}")
     public ApiResponse<P> update(@PathVariable ID id, @Valid @RequestBody R request) {
-        return ApiResponse.successOf(getService().update(id, request));
+        return ApiResponse.successOf(service.update(id, request));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ApiResponse<Void> delete(@PathVariable ID id) {
-        getService().delete(id);
+        service.delete(id);
         return ApiResponse.success();
     }
 
     @GetMapping("/views/{id}")
     public ApiResponse<V> getViewById(@PathVariable ID id) {
-        return ApiResponse.successOf(getService().getViewById(id));
+        return ApiResponse.successOf(service.getViewById(id));
     }
 
     @GetMapping("/views")
     public ApiResponse<Page<V>> getViewsPaged(Pageable pageable) {
-        return ApiResponse.successOf(getService().getViewPaging(pageable));
+        return ApiResponse.successOf(service.getViewPaging(pageable));
     }
 
     @PostMapping("/views/list")

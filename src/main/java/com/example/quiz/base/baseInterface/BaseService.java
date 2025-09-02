@@ -17,7 +17,7 @@ public interface BaseService<E, ID, R, P, V> {
     Page<P> getAll(Pageable pageable);
     void delete(ID id);
 
-    P findById(ID id);
+    E findById(ID id);
 
     Page<P> findAll(Pageable pageable);
 
