@@ -1,5 +1,6 @@
 package com.example.quiz.controller;
 
+import com.example.quiz.base.baseInterface.BaseService;
 import com.example.quiz.base.impl.BaseController;
 import com.example.quiz.model.dto.request.QuizCategoryRequest;
 import com.example.quiz.model.dto.response.QuizCategoryResponse;
@@ -12,13 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/quiz-categories")
-@RequiredArgsConstructor
 public class QuizCategoryController extends BaseController<QuizCategory, Long, QuizCategoryRequest, QuizCategoryResponse, QuizCategoryView> {
 
     private final QuizCategoryService quizCategoryService;
 
-    @Override
-    protected QuizCategoryService getService() {
-        return quizCategoryService;
+    protected QuizCategoryController(BaseService<QuizCategory, Long, QuizCategoryRequest, QuizCategoryResponse, QuizCategoryView> service, QuizCategoryService quizCategoryService) {
+        super(service);
+        this.quizCategoryService = quizCategoryService;
     }
 }

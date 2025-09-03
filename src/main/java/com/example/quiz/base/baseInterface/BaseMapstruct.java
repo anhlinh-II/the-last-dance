@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 public interface BaseMapstruct<E, R, P, V> {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "isDelete", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
@@ -30,7 +29,6 @@ public interface BaseMapstruct<E, R, P, V> {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "isDelete", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
@@ -49,4 +47,5 @@ public interface BaseMapstruct<E, R, P, V> {
         return views.stream().map(this::viewToResponse).collect(Collectors.toList());
     }
 }
+
 

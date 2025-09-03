@@ -70,7 +70,7 @@ public abstract class BaseController<E, ID, R, P, V> {
 
     @PostMapping("/views/list")
     public ApiResponse<PagingResponseDto<Map<String, Object>>> getViewsPaged(@Valid @RequestBody RequestPagingDto request) {
-        PagingResponseDto<Map<String, Object>> result = getService().getViewPagingWithFilter(request);
+        PagingResponseDto<Map<String, Object>> result = service.getViewPagingWithFilter(request);
         return ApiResponse.successOf(result);
     }
 

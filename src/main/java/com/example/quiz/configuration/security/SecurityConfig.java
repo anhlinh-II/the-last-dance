@@ -1,5 +1,6 @@
 package com.example.quiz.configuration.security;
 
+import com.example.quiz.utils.SecurityUtils;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.util.Base64;
 import lombok.RequiredArgsConstructor;
@@ -38,15 +39,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(
-                        auth -> {
-                            auth
-                                    .requestMatchers(whiteList).permitAll()
-                                    .requestMatchers("/ws/**").permitAll()
-                                    .anyRequest().authenticated();
-                            // auth.requestMatchers("/api/admin")
-                            //     .hasRole("ADMIN")
-                            //     .anyRequest().authenticated();
-                        })
+                        auth -> auth
+                                .anyRequest().permitAll()
+                )
                 .formLogin(AbstractHttpConfigurer::disable)
                 .oauth2ResourceServer(
                         (oauth2) -> oauth2

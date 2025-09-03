@@ -1,6 +1,9 @@
 package com.example.quiz.service.impl;
 
 
+import com.example.quiz.base.baseInterface.BaseMapstruct;
+import com.example.quiz.base.baseInterface.BaseRepository;
+import com.example.quiz.base.impl.AdvancedFilterService;
 import com.example.quiz.base.impl.BaseServiceImpl;
 import com.example.quiz.exception.AppException;
 import com.example.quiz.exception.ErrorCode;
@@ -13,8 +16,8 @@ import com.example.quiz.repository.UserRepository;
 import com.example.quiz.service.UserService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
@@ -27,16 +30,22 @@ import java.util.Optional;
 @Service
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@SuperBuilder
 public class UserServiceImpl extends BaseServiceImpl<User, Long, UserRequest, UserResponse, UserView>
         implements UserService {
     UserRepository userRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
 
+    public UserServiceImpl(AdvancedFilterService advancedFilterService, BaseRepository<User, Long> repository, BaseMapstruct<User, UserRequest, UserResponse, UserView> mapper, JpaRepository<UserView, Long> viewRepository, UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
+        super(advancedFilterService, repository, mapper, viewRepository);
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
+    }
+
     @Override
     protected Class<UserView> getViewClass() {
-        return null;
+        return UserView.class;
     }
 
     public User getUser(Long id) {

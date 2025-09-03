@@ -7,6 +7,7 @@ import com.example.quiz.model.dto.request.RequestPagingDto;
 import com.example.quiz.model.dto.response.PagingResponseDto;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
+@SuperBuilder
 public abstract class BaseServiceImpl<E, ID, R, P, V> implements BaseService<E, ID, R, P, V> {
 
     private final AdvancedFilterService advancedFilterService;

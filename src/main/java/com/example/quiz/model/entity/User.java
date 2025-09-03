@@ -1,5 +1,6 @@
 package com.example.quiz.model.entity;
 
+import com.example.quiz.base.BaseEntity;
 import com.example.quiz.enums.Gender;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -16,7 +18,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @Getter
 @Setter
-public class User {
+public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -51,4 +53,13 @@ public class User {
     private String otp;
     private Instant otpGeneratedTime;
     private boolean isActive;
+    private boolean isDelete;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "user_roles",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> authorities;
 }
