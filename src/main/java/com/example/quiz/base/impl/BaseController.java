@@ -4,16 +4,12 @@ import com.example.quiz.base.baseInterface.BaseService;
 import com.example.quiz.model.dto.request.RequestPagingDto;
 import com.example.quiz.model.dto.response.ApiResponse;
 import com.example.quiz.model.dto.response.PagingResponseDto;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +21,7 @@ public abstract class BaseController<E, ID, R, P, V> {
         this.service = service;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ApiResponse<List<P>> findAll() {
         return ApiResponse.successOf(service.findAll());
     }
@@ -40,13 +36,13 @@ public abstract class BaseController<E, ID, R, P, V> {
         return ApiResponse.successOf(service.getById(id));
     }
 
-    @PostMapping
+    @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<P> create(@Valid @RequestBody R request) {
         return ApiResponse.successOf(service.create(request));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/edit/{id}")
     public ApiResponse<P> update(@PathVariable ID id, @Valid @RequestBody R request) {
         return ApiResponse.successOf(service.update(id, request));
     }
@@ -72,25 +68,6 @@ public abstract class BaseController<E, ID, R, P, V> {
     public ApiResponse<PagingResponseDto<Map<String, Object>>> getViewsPaged(@Valid @RequestBody RequestPagingDto request) {
         PagingResponseDto<Map<String, Object>> result = service.getViewPagingWithFilter(request);
         return ApiResponse.successOf(result);
-    }
-
-    // Exception handler (có thể đưa vào @ControllerAdvice riêng)
-    @ExceptionHandler(EntityNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiResponse<Void> handleNotFound(EntityNotFoundException ex) {
-        return ApiResponse.error(404, ex.getMessage());
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiResponse<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach(error -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return ApiResponse.error(400, "Validation error");
     }
 }
 

@@ -32,6 +32,13 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
+    // OAuth2 fields
+    private String googleId;
+    private String firstName;
+    private String lastName;
+    private String fullName;
+    private String locale;
+
     private String phone;
 
     private Instant dob;

@@ -1,9 +1,6 @@
 package com.example.quiz.utils;
 
 import com.example.quiz.model.dto.response.LoginResponse;
-import com.example.quiz.model.entity.Role;
-import com.example.quiz.model.entity.User;
-import com.example.quiz.service.UserService;
 import com.nimbusds.jose.util.Base64;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +18,6 @@ import javax.crypto.spec.SecretKeySpec;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @Slf4j
@@ -29,13 +25,12 @@ import java.util.Set;
 public class SecurityUtils {
 
     public static final MacAlgorithm JWT_ALGORITHM = MacAlgorithm.HS512;
-    private final UserService userService;
     private final JwtEncoder jwtEncoder;
-    @Value("${me_social.jwt.refresh-token-validity-in-seconds}")
+    @Value("${quiz.jwt.refresh-token-validity-in-seconds}")
     public Long refreshTokenExpiration;
-    @Value("${me_social.jwt.base64-secret}")
+    @Value("${quiz.jwt.base64-secret}")
     private String jwtKey;
-    @Value("${me_social.jwt.access-token-validity-in-seconds}")
+    @Value("${quiz.jwt.access-token-validity-in-seconds}")
     private Long accessTokenExpiration;
 
     /**
@@ -86,34 +81,38 @@ public class SecurityUtils {
         }
     }
 
+    private void addClaimIfNotNull(JwtClaimsSet.Builder builder, String key, Object value) {
+        if (value != null) {
+            builder.claim(key, value);
+        }
+    }
+
     public String createAccessToken(String emailUsernamePhone, LoginResponse dto) {
         LoginResponse.UserInsideToken userToken = new LoginResponse.UserInsideToken();
-        userToken.setId(dto.getUser().getId());
-        userToken.setEmail(dto.getUser().getEmail());
-        userToken.setUsername(dto.getUser().getUsername());
-
+        if (dto.getUser() != null) {
+            userToken.setId(dto.getUser().getId());
+            userToken.setEmail(dto.getUser().getEmail());
+            userToken.setUsername(dto.getUser().getUsername());
+        }
         Instant now = Instant.now();
         Instant validity = now.plus(accessTokenExpiration, ChronoUnit.SECONDS);
+        
+        JwtClaimsSet.Builder claimsBuilder = JwtClaimsSet.builder()
+                .issuedAt(now)
+                .expiresAt(validity)
+                .subject(emailUsernamePhone);
+        addClaimIfNotNull(claimsBuilder, "user", userToken);
+        if (dto.getUser() != null) {
+            addClaimIfNotNull(claimsBuilder, "user_id", dto.getUser().getId());
+            addClaimIfNotNull(claimsBuilder, "email", dto.getUser().getEmail());
+        }
+        JwtClaimsSet claims = claimsBuilder.build();
+        log.info("claims: {}", claims.getClaims());
+        JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
+        return jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
+    }
 
-        User user = userService.handleGetUserByUsernameOrEmailOrPhone(emailUsernamePhone);
-
-//        Set<Role> roles = user.getAuthorities();
-
-        // @formatter:off
-          JwtClaimsSet claims = JwtClaimsSet.builder()
-                  .issuedAt(now)
-                  .expiresAt(validity)
-                  .subject(emailUsernamePhone)
-                  .claim("user", userToken)
-                  .claim("user_id", dto.getUser().getId())
-//                  .claim("roles", roles)
-                  .claim("email", dto.getUser().getEmail())
-          .build();
-          JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
-          return jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
-     }
-
-     public String createRefreshToken(String emailUsernamePhone, LoginResponse dto) {
+    public String createRefreshToken(String emailUsernamePhone, LoginResponse dto) {
         Instant now = Instant.now();
         Instant validity = now.plus(this.refreshTokenExpiration, ChronoUnit.SECONDS);
 

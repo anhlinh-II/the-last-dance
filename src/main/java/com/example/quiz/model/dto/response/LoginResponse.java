@@ -24,12 +24,8 @@ public class LoginResponse {
           private String username;
           private String location;
           private String bio;
-          private int postNum;
-          private int likeNum;
           private boolean isActive;
           private Set<Role> authorities;
-          private String firstName;
-          private String lastName;
           private String avatarUrl;
 
           public UserLogin(Long id, String email, String username, String location, String bio, int postNum2,
@@ -40,12 +36,17 @@ public class LoginResponse {
                this.location = location;
                this.isActive = isActive;
                this.authorities = authorities;
-               this.firstName = firstName;
-               this.lastName = lastName;
                this.avatarUrl = avatarUrl;
           }
 
           public UserLogin(Long id, String email, String username, String location, String bio, boolean active, String avatarUrl) {
+               this.id = id;
+               this.email = email;
+               this.username = username;
+               this.location = location;
+               this.bio = bio;
+               this.isActive = active;
+               this.avatarUrl = avatarUrl;
           }
      }
 

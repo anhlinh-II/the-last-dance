@@ -47,7 +47,9 @@ public enum ErrorCode {
 
     NOT_MEMBER(1017, "You are not a member of this group", HttpStatus.BAD_REQUEST),
 
-    CANT_DELETE(1018, "You can not delete other people's message", HttpStatus.BAD_REQUEST);
+    CANT_DELETE(1018, "You can not delete other people's message", HttpStatus.BAD_REQUEST),
+
+    EMAIL_ALREADY_EXISTS_WITH_GOOGLE(1019, "This email is already registered with Google. Please login with Google.", HttpStatus.BAD_REQUEST);
 
     private int code;
     private String message;
