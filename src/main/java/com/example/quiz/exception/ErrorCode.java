@@ -49,7 +49,15 @@ public enum ErrorCode {
 
     CANT_DELETE(1018, "You can not delete other people's message", HttpStatus.BAD_REQUEST),
 
-    EMAIL_ALREADY_EXISTS_WITH_GOOGLE(1019, "This email is already registered with Google. Please login with Google.", HttpStatus.BAD_REQUEST);
+    EMAIL_ALREADY_EXISTS_WITH_GOOGLE(1019, "This email is already registered with Google. Please login with Google.", HttpStatus.BAD_REQUEST),
+    
+    PASSWORD_NOT_MATCH(1020, "Password and confirm password do not match", HttpStatus.BAD_REQUEST),
+    
+    INVALID_TOKEN(1021, "Invalid or expired reset token", HttpStatus.BAD_REQUEST),
+    
+    TOKEN_EXPIRED(1022, "Reset token has expired", HttpStatus.BAD_REQUEST),
+    
+    USER_NOT_EXISTED(1023, "User with this email does not exist", HttpStatus.NOT_FOUND);
 
     private int code;
     private String message;

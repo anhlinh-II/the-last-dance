@@ -2,7 +2,9 @@ package com.example.quiz.controller;
 
 import com.example.quiz.base.baseInterface.BaseService;
 import com.example.quiz.base.impl.BaseController;
+import com.example.quiz.model.dto.request.ForgotPasswordRequest;
 import com.example.quiz.model.dto.request.LoginRequest;
+import com.example.quiz.model.dto.request.ResetPasswordRequest;
 import com.example.quiz.model.dto.request.UserRequest;
 import com.example.quiz.model.dto.response.ApiResponse;
 import com.example.quiz.model.dto.response.LoginResponse;
@@ -191,5 +193,15 @@ public class UserController extends BaseController<User, Long, UserRequest, User
                 .message("OAuth2 URL generated")
                 .result(result)
                 .build();
+    }
+
+    @PostMapping("/forgot-password")
+    public ApiResponse<String> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        return userService.forgotPassword(request);
+    }
+
+    @PostMapping("/reset-password")
+    public ApiResponse<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        return userService.resetPassword(request);
     }
 }

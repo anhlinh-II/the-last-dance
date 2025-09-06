@@ -5,7 +5,9 @@ import com.example.quiz.base.impl.BaseServiceImpl;
 import com.example.quiz.exception.AppException;
 import com.example.quiz.exception.ErrorCode;
 import com.example.quiz.mapper.UserMapper;
+import com.example.quiz.model.dto.request.ForgotPasswordRequest;
 import com.example.quiz.model.dto.request.LoginRequest;
+import com.example.quiz.model.dto.request.ResetPasswordRequest;
 import com.example.quiz.model.dto.request.UserRequest;
 import com.example.quiz.model.dto.response.ApiResponse;
 import com.example.quiz.model.dto.response.LoginResponse;
@@ -34,6 +36,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -319,6 +322,69 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long, UserRequest, Us
                 .code(1000)
                 .message("New OTP sent to email.")
                 .result("OTP regenerated")
+                .build();
+    }
+
+    @Override
+    public ApiResponse<String> forgotPassword(ForgotPasswordRequest request) {
+        User user = getUserByEmail(request.getEmail());
+        
+        if (user == null) {
+            throw new AppException(ErrorCode.USER_NOT_EXISTED);
+        }
+
+        if (user.getGoogleId() != null) {
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        }
+
+        // Generate reset token
+        String resetToken = UUID.randomUUID().toString();
+        user.setResetPasswordToken(resetToken);
+        user.setResetPasswordTokenExpiry(Instant.now().plus(Duration.ofMinutes(15))); // 15 minutes expiry
+        userRepository.save(user);
+
+        // Send reset email
+        try {
+            String resetUrl = "http://localhost:3000/reset-password?token=" + resetToken;
+            emailUtil.sendResetPasswordEmail(user.getEmail(), resetUrl);
+        } catch (MessagingException e) {
+            throw new AppException(ErrorCode.ERROR_EMAIL);
+        }
+
+        return ApiResponse.<String>builder()
+                .code(1000)
+                .message("Reset password link sent to your email")
+                .result("Check your email for reset password link")
+                .build();
+    }
+
+    @Override
+    public ApiResponse<Void> resetPassword(ResetPasswordRequest request) {
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new AppException(ErrorCode.PASSWORD_NOT_MATCH);
+        }
+
+        Optional<User> userOpt = userRepository.findByResetPasswordToken(request.getToken());
+        if (userOpt.isEmpty()) {
+            throw new AppException(ErrorCode.INVALID_TOKEN);
+        }
+
+        User user = userOpt.get();
+        
+        // Check if token is expired
+        if (user.getResetPasswordTokenExpiry().isBefore(Instant.now())) {
+            throw new AppException(ErrorCode.TOKEN_EXPIRED);
+        }
+
+        // Update password
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setResetPasswordToken(null);
+        user.setResetPasswordTokenExpiry(null);
+        userRepository.save(user);
+
+        return ApiResponse.<Void>builder()
+                .code(1000)
+                .message("Password reset successfully")
                 .build();
     }
 

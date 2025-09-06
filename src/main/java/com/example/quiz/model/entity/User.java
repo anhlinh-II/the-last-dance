@@ -62,6 +62,13 @@ public class User extends BaseEntity {
     private boolean isActive;
     private boolean isDelete;
 
+    // Reset password fields
+    @Column(name = "reset_password_token")
+    private String resetPasswordToken;
+    
+    @Column(name = "reset_password_token_expiry")
+    private Instant resetPasswordTokenExpiry;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "user_roles",

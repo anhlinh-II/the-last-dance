@@ -1,7 +1,9 @@
 package com.example.quiz.service;
 
 import com.example.quiz.base.baseInterface.BaseService;
+import com.example.quiz.model.dto.request.ForgotPasswordRequest;
 import com.example.quiz.model.dto.request.LoginRequest;
+import com.example.quiz.model.dto.request.ResetPasswordRequest;
 import com.example.quiz.model.dto.request.UserRequest;
 import com.example.quiz.model.dto.response.UserResponse;
 import com.example.quiz.model.dto.response.LoginResponse;
@@ -34,4 +36,8 @@ public interface UserService extends BaseService<User, Long, UserRequest, UserRe
     ApiResponse<Void> verifyOtp(String email, String otp);
 
     ApiResponse<String> regenerateOtp(String email);
+    
+    ApiResponse<String> forgotPassword(ForgotPasswordRequest request);
+    
+    ApiResponse<Void> resetPassword(ResetPasswordRequest request);
 }

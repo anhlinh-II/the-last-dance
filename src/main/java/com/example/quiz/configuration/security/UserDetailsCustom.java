@@ -40,7 +40,6 @@ public class UserDetailsCustom implements UserDetailsService {
                userOptional = userRepository.findByPhone(login);
           }
           if (userOptional.isEmpty()) {
-               // Nếu không tìm thấy user ở tất cả các trường hợp, ném ngoại lệ tại đây
                log.info("phone empty");
                throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
           }

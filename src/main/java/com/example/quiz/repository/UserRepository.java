@@ -38,6 +38,10 @@ public interface UserRepository extends BaseRepository<User, Long> {
     Optional<User> findByEmail(String username);
 
     Optional<User> findByPhone(String phoneNumber);
+    
+    Optional<User> findByResetPasswordToken(String token);
+    
+    Optional<User> findByGoogleId(String googleId);
 
     void deleteById(Long id);
 
